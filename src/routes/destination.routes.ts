@@ -1,5 +1,7 @@
 import { Router } from "express";
 import {
+  getDestinations,
+  getDestinationById,
   getMyDestinations,
   createDestination,
   deleteDestination,
@@ -8,13 +10,11 @@ import { protect } from "../middleware/auth.middleware";
 
 const router = Router();
 
-// Public routes
-router.route("/").get(getMyDestinations);
-router.route("/:id").get(getMyDestinations);
-
-// Protected routes (require login)
-router.route("/").post(protect, createDestination);
+// Specific routes FIRST (before /:id)
+router.route("/").get(getDestinations).post(protect, createDestination);
 router.route("/my-listings").get(protect, getMyDestinations);
-router.route("/:id").delete(protect, deleteDestination);
+
+// Parameterized routes LAST
+router.route("/:id").get(getDestinationById).delete(protect, deleteDestination);
 
 export default router;
