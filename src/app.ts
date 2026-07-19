@@ -4,6 +4,7 @@ import authRoutes from "./routes/auth.routes";
 import { env } from "./config/env";
 import destinationRoutes from "./routes/destination.routes";
 import aiRoutes from "./routes/ai.routes";
+import dataAnalyzerRoutes from "./routes/dataAnalyzer.routes";
 
 const app: Application = express();
 
@@ -24,6 +25,7 @@ app.get("/api/health", (req: Request, res: Response) => {
 
 app.use("/api/destinations", destinationRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/data", dataAnalyzerRoutes);
 
 // Error handler MUST be after all routes
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
