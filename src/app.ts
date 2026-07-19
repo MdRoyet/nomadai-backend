@@ -3,6 +3,7 @@ import cors from "cors";
 import authRoutes from "./routes/auth.routes";
 import { env } from "./config/env";
 import destinationRoutes from "./routes/destination.routes";
+import aiRoutes from "./routes/ai.routes";
 
 const app: Application = express();
 
@@ -21,6 +22,10 @@ app.get("/api/health", (req: Request, res: Response) => {
   res.status(200).json({ status: "ok", message: "Server is running" });
 });
 
+app.use("/api/destinations", destinationRoutes);
+app.use("/api/ai", aiRoutes);
+
+// Error handler MUST be after all routes
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({
@@ -28,7 +33,5 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     message: err.message || "Internal Server Error",
   });
 });
-
-app.use("/api/destinations", destinationRoutes);
 
 export default app;
