@@ -6,6 +6,7 @@ import destinationRoutes from "./routes/destination.routes";
 import aiRoutes from "./routes/ai.routes";
 import dataAnalyzerRoutes from "./routes/dataAnalyzer.routes";
 import adminRoutes from "./routes/admin.routes";
+import translateRoutes from "./routes/translate.routes";
 
 const app: Application = express();
 
@@ -28,6 +29,7 @@ app.use("/api/destinations", destinationRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/data", dataAnalyzerRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api", translateRoutes);
 
 // Error handler MUST be after all routes
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
