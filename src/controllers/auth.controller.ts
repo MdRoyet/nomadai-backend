@@ -2,10 +2,11 @@ import { Request, Response } from 'express';
 import { User } from '../models/User.model';
 import { ApiError } from '../utils/ApiError';
 import { asyncHandler } from '../utils/asyncHandler';
+import { env } from '../config/env';
 import jwt from 'jsonwebtoken';
 
 const generateToken = (userId: string) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET as string, {
+  return jwt.sign({ id: userId }, env.JWT_SECRET, {
     expiresIn: '30d',
   });
 };
