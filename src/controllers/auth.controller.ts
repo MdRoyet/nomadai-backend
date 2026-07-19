@@ -38,6 +38,31 @@ export const registerUser = asyncHandler(async (req: Request, res: Response) => 
   }
 });
 
+const DEMO_EMAIL = 'demo@nomadai.com';
+const DEMO_PASSWORD = 'demo1234';
+const DEMO_NAME = 'Demo User';
+
+export const demoLogin = asyncHandler(async (req: Request, res: Response) => {
+  let user = await User.findOne({ email: DEMO_EMAIL }).select('+password');
+
+  if (!user) {
+    user = await User.create({
+      name: DEMO_NAME,
+      email: DEMO_EMAIL,
+      password: DEMO_PASSWORD,
+      role: 'user',
+    });
+  }
+
+  res.json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    token: generateToken(user._id.toString()),
+  });
+});
+
 export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
