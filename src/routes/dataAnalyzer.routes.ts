@@ -12,6 +12,7 @@ const upload = multer({
     const allowed = [
       "text/csv",
       "application/json",
+      "application/pdf",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "application/vnd.ms-excel",
     ];
@@ -19,12 +20,13 @@ const upload = multer({
       allowed.includes(file.mimetype) ||
       file.originalname.endsWith(".csv") ||
       file.originalname.endsWith(".json") ||
+      file.originalname.endsWith(".pdf") ||
       file.originalname.endsWith(".xlsx") ||
       file.originalname.endsWith(".xls")
     ) {
       cb(null, true);
     } else {
-      cb(new Error("Only CSV, JSON, and Excel files are allowed"));
+      cb(new Error("Only CSV, JSON, Excel, and PDF files are allowed"));
     }
   },
 });

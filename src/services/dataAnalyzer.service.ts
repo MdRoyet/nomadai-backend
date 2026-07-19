@@ -1,5 +1,6 @@
 import { parse } from "csv-parse/sync";
 import * as XLSX from "xlsx";
+import { PDFParse } from "pdf-parse";
 import { ChatGroq } from "@langchain/groq";
 
 const llm = new ChatGroq({
@@ -14,7 +15,7 @@ export interface AnalysisResult {
   risks: string[];
   kpis: { label: string; value: string; trend?: string }[];
   recommendations: string[];
-  rawData: { headers: string[]; rows: (string | number)[][]; rowCount: number };
+  rawData: { headers: string[]; rows: (string | number)[][]; rowCount: number; pdfText?: string };
 }
 
 export function parseCSV(content: string): { headers: string[]; rows: (string | number)[][] } {
@@ -41,6 +42,52 @@ export function parseJSON(content: string): { headers: string[]; rows: (string |
   const headers = [...new Set(arr.flatMap((r) => Object.keys(r)))];
   const rows = arr.map((r) => headers.map((h) => r[h] ?? ""));
   return { headers, rows };
+}
+
+export async function parsePDF(buffer: Buffer): Promise<{ headers: string[]; rows: (string | number)[][]; text: string }> {
+  const parser = new PDFParse({ data: buffer });
+  const pdfText = await parser.getText();
+  const text = pdfText.text;
+  await parser.destroy();
+
+  // Try to extract table-like data from PDF text
+  const lines = text.split("\n").filter((l: string) => l.trim());
+  if (lines.length === 0) return { headers: [], rows: [], text };
+
+  // Check if content looks tabular (has consistent delimiters)
+  const tabularLines = lines.filter((l: string) => l.includes("\t") || l.includes(",") || l.includes("|"));
+  if (tabularLines.length >= 2) {
+    const delimiter = tabularLines[0].includes("|")
+      ? "|"
+      : tabularLines[0].includes("\t")
+        ? "\t"
+        : ",";
+    const headerLine = tabularLines[0];
+    const headers = headerLine
+      .split(delimiter)
+      .map((h: string) => h.trim())
+      .filter(Boolean);
+    const rows = tabularLines.slice(1).map((line: string) =>
+      line
+        .split(delimiter)
+        .map((c: string) => c.trim())
+        .filter(Boolean)
+    );
+    if (headers.length > 0 && rows.length > 0) {
+      return { headers, rows, text };
+    }
+  }
+
+  // Fallback: treat entire text as single-column content, split into chunks
+  const chunks: string[] = [];
+  for (let i = 0; i < lines.length; i += 5) {
+    chunks.push(lines.slice(i, i + 5).join(" "));
+  }
+  return {
+    headers: ["content"],
+    rows: chunks.map((c: string) => [c]),
+    text,
+  };
 }
 
 export async function analyzeData(
