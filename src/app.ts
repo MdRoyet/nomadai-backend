@@ -8,6 +8,11 @@ import dataAnalyzerRoutes from "./routes/dataAnalyzer.routes";
 import adminRoutes from "./routes/admin.routes";
 import translateRoutes from "./routes/translate.routes";
 import matcherRoutes from "./routes/matcher.routes";
+import bookingRoutes from "./routes/booking.routes";
+import reviewRoutes from "./routes/review.routes";
+import favoriteRoutes from "./routes/favorite.routes";
+import itineraryRoutes from "./routes/itinerary.routes";
+import currencyRoutes from "./routes/currency.routes";
 
 const app: Application = express();
 
@@ -43,6 +48,11 @@ app.use("/api/data", dataAnalyzerRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api", translateRoutes);
 app.use("/api", matcherRoutes);
+app.use("/api/bookings", bookingRoutes);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/favorites", favoriteRoutes);
+app.use("/api/itineraries", itineraryRoutes);
+app.use("/api", currencyRoutes);
 
 // Error handler MUST be after all routes
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
