@@ -13,7 +13,8 @@ export const env = {
   MONGO_URI: required('MONGO_URI'),
   JWT_SECRET: required('JWT_SECRET'),
   CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:3000',
-  FIREBASE_PROJECT_ID: required('FIREBASE_PROJECT_ID'),
-  FIREBASE_CLIENT_EMAIL: required('FIREBASE_CLIENT_EMAIL'),
-  FIREBASE_PRIVATE_KEY: required('FIREBASE_PRIVATE_KEY'),
+  FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID || '',
+  FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL || '',
+  FIREBASE_PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY || '',
+  GROQ_API_KEY: process.env.GROQ_API_KEY || '',
 };

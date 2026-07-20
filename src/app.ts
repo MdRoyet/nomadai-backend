@@ -13,7 +13,18 @@ const app: Application = express();
 
 app.use(
   cors({
-    origin: env.CLIENT_URL,
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        env.CLIENT_URL,
+        "https://nomadai-frontend.vercel.app",
+        "http://localhost:3000",
+      ];
+      if (!origin || allowedOrigins.some(o => origin.includes(o.replace("https://", "").replace("http://", "")))) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
